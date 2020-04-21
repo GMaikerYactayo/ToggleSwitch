@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    
+    <h:head>
+
+    </h:head>
+    <h:body>
+
+        <p:growl showDetail="true" id="messages" />
+        
+        <p:spacer/>
+        <h:form id="form">
+            <div align="right">
+                <h:form id="estadosAlumnos">
+                    <p:commandButton value="Activo"
+                                     id="btnActivo"
+                                     style="background: black"
+                                     oncomplete="PF('estado').clearFilters()"
+                                     actionListener="#{personaC.listar('A')}"
+                                     update=":form:dtTable"/>
+
+                    <p:commandButton value="Inactivo"
+                                     id="btnInactivo"
+                                     style="background: black"
+                                     oncomplete="PF('estado').clearFilters()"
+                                     actionListener="#{personaC.listar('I')}"
+                                     update=":form:dtTable"/>
+                </h:form>
+            </div>
+
+            <p:dataTable value="#{personaC.listadoPer}" 
+                         var="lista" 
+                         widgetVar="estado"
+                         id="dtTable" 
+                         filteredValue="#{personaC.listadoPer}"
+                         selectionMode="single"
+                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         paginator="true" 
+                         rowKey="#{lista.CODPER}"
+                         rows="8" 
+                         selection="#{personaC.select}"
+                         style="margin-bottom:20px">
+
+                <f:facet name="header">
+                    PERSONAS
+                </f:facet>
+                
+                <p:autoUpdate/>
+
+                <p:column headerText="Nombre y apellido"  filterMatchMode="contains" >
+                    <center>
+
+                        <h:outputText value="#{lista.NOMPER} #{lista.APEPER}" />
+                    </center>
+                </p:column>
+                <p:column headerText="Celular" >
+                    <center>
+                        <h:outputText value="#{lista.CELPER}" />
+                    </center>
+                </p:column>
+                <p:column headerText="DNI" >
+                    <center>
+                        <h:outputText value="#{lista.DNIPER}" />
+                    </center>
+                </p:column>
+                <p:column  headerText="ESTADO"  >
+                    <center>
+                        <h:outputText value="#{lista.ESTPER}" />
+                    </center>
+                </p:column>
+
+                <f:facet name="footer">
+                    EN TOTAL HAY #{fn:length(personaC.listadoPer)} REGISTROS.
+                </f:facet>
+            </p:dataTable>
+            <p:contextMenu for="dtTable">
+                <p:menuitem value="Modificar" update=":dlgDatos" icon="ui-icon-pencil"  oncomplete="PF('wdlgDatos').show()"/>
+                <p:menuitem value="Eliminar" update=":messages :form" icon="ui-icon-circle-close" action="#{personaC.eliminar()}"/>
+            </p:contextMenu>
+
+        </h:form>
+        <p:dialog id="dlgDatos" widgetVar="wdlgDatos" >
+            <h:form>
+                <p:panelGrid columns="4">
+                    <p:outputLabel value="Año"/>
+                    <p:inputText value="#{personaC.select.NOMPER}" maxlength="4" required="true" requiredMessage="Se necesita el año" >
+                        <p:keyFilter regEx=""/>
+                    </p:inputText>
+                </p:panelGrid>
+                <p:commandButton value="Actualizar" actionListener="#{personaC.modificar()}"
+                                 update=":form :messages" oncomplete="PF('wdlgDatos').hide();">
+                    <p:tooltip trackMouse="true"/>
+                </p:commandButton>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+                <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+</html>
