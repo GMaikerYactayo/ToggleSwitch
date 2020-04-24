@@ -36,7 +36,7 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
     public void modificar(Persona persona) throws Exception {
         try {
             this.Conexion();
-            String sql = "UPDATE PERSONA SET NOMPER=?, APEPER=?, CELPER=?, DNIPER=?, ESTPER=?";
+            String sql = "UPDATE PERSONA SET NOMPER=?, APEPER=?, CELPER=?, DNIPER=?, ESTPER=? WHERE CODPER=?";
             PreparedStatement ps = this.getCn().prepareStatement(sql);
             ps.setString(1, persona.getNOMPER());
             ps.setString(2, persona.getAPEPER());
@@ -56,8 +56,8 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
     public void eliminar(Persona persona) throws Exception {
          try {
             this.Conexion();
-            String sql = "update PERSONA set ESTPER='I' where CODPER=?";
-            PreparedStatement ps = this.getCn().prepareCall(sql);
+            String sql = "UPDATE PERSONA SET ESTPER='I' WHERE CODPER=?";
+            PreparedStatement ps = this.getCn().prepareStatement(sql);
             ps.setInt(1, persona.getCODPER());
             ps.executeUpdate();
             ps.close();
@@ -99,7 +99,7 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
     }
     public List<Persona> listarE(String filtro) throws Exception {
         List<Persona> listado;
-        Persona empr;
+        Persona per;
         try {
             this.Conexion();
             String sql = "SELECT * FROM PERSONA WHERE ESTPER='" + filtro + "'";
@@ -107,14 +107,14 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
             Statement st = this.getCn().createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
-                empr = new Persona();
-                empr.setCODPER(rs.getInt("CODPER"));
-                empr.setNOMPER(rs.getString("NOMPER"));
-                empr.setAPEPER(rs.getString("APEPER"));
-                empr.setCELPER(rs.getString("CELPER"));
-                empr.setDNIPER(rs.getString("DNIPER"));
-                empr.setESTPER(rs.getString("ESTPER"));
-                listado.add(empr);
+                per = new Persona();
+                per.setCODPER(rs.getInt("CODPER"));
+                per.setNOMPER(rs.getString("NOMPER"));
+                per.setAPEPER(rs.getString("APEPER"));
+                per.setCELPER(rs.getString("CELPER"));
+                per.setDNIPER(rs.getString("DNIPER"));
+                per.setESTPER(rs.getString("ESTPER"));
+                listado.add(per);
             }
             rs.close();
             st.close();

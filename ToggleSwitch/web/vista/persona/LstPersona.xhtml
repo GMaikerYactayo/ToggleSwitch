@@ -5,54 +5,76 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-    
+    <style type="text/css">
+        .ui-toggleswitch {
+            vertical-align: bottom;
+        }
+        .ui-toggleswitch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 28px;
+        }
+
+        .ui-toggleswitch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .ui-toggleswitch-slider:before {
+            position: absolute;
+            content: "";
+            height: 23px;
+            width: 26px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+    </style>
+
+
     <h:head>
 
     </h:head>
     <h:body>
 
         <p:growl showDetail="true" id="messages" />
-        
-        <p:spacer/>
-        <h:form id="form">
-            <div align="right">
-                <h:form id="estadosAlumnos">
-                    <p:commandButton value="Activo"
-                                     id="btnActivo"
-                                     style="background: black"
-                                     oncomplete="PF('estado').clearFilters()"
-                                     actionListener="#{personaC.listar('A')}"
-                                     update=":form:dtTable"/>
 
-                    <p:commandButton value="Inactivo"
-                                     id="btnInactivo"
-                                     style="background: black"
-                                     oncomplete="PF('estado').clearFilters()"
-                                     actionListener="#{personaC.listar('I')}"
-                                     update=":form:dtTable"/>
-                </h:form>
-            </div>
+        <h:form id="form">
 
             <p:dataTable value="#{personaC.listadoPer}" 
                          var="lista" 
-                         widgetVar="estado"
                          id="dtTable" 
-                         filteredValue="#{personaC.listadoPer}"
+                         widgetVar="estado"
+                         sortBy="#{lista.CELPER}"
                          selectionMode="single"
-                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                         paginator="true" 
-                         rowKey="#{lista.CODPER}"
-                         rows="8" 
                          selection="#{personaC.select}"
+                         paginator="true" 
+                         emptyMessage="No hay registro"
+                         rowKey="#{lista.CODPER}"
+                         rows="10" 
                          style="margin-bottom:20px">
-
                 <f:facet name="header">
                     PERSONAS
                 </f:facet>
-                
+
                 <p:autoUpdate/>
 
-                <p:column headerText="Nombre y apellido"  filterMatchMode="contains" >
+                <p:column headerText="ID" >
+                    <center>
+                        <h:outputText value="#{lista.CODPER}" />
+                    </center>
+                </p:column>
+                <p:column headerText="Nombre y apellido"   >
                     <center>
 
                         <h:outputText value="#{lista.NOMPER} #{lista.APEPER}" />
@@ -68,8 +90,13 @@
                         <h:outputText value="#{lista.DNIPER}" />
                     </center>
                 </p:column>
-                <p:column  headerText="ESTADO"  >
+                <p:column  headerText="ESTADO" filterBy="#{lista.ESTPER}">
                     <center>
+                        <f:facet name="filter">
+                            <p:toggleSwitch value="#{personaC.bt}"  onchange="PF('estado').filter()">
+                                <p:ajax listener="#{personaC.estado()}" />
+                            </p:toggleSwitch>
+                        </f:facet>
                         <h:outputText value="#{lista.ESTPER}" />
                     </center>
                 </p:column>
@@ -78,9 +105,9 @@
                     EN TOTAL HAY #{fn:length(personaC.listadoPer)} REGISTROS.
                 </f:facet>
             </p:dataTable>
-            <p:contextMenu for="dtTable">
+            <p:contextMenu id="botones" for="dtTable">
                 <p:menuitem value="Modificar" update=":dlgDatos" icon="ui-icon-pencil"  oncomplete="PF('wdlgDatos').show()"/>
-                <p:menuitem value="Eliminar" update=":messages :form" icon="ui-icon-circle-close" action="#{personaC.eliminar()}"/>
+                <p:menuitem value="Eliminar" update=":messages :form" icon="ui-icon-circle-close" oncomplete="PF('estado').clearFilters()" action="#{personaC.eliminar()}"/>
             </p:contextMenu>
 
         </h:form>

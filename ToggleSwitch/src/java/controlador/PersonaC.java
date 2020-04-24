@@ -18,7 +18,7 @@ public class PersonaC implements Serializable {
     private Persona persona = new Persona();
     private Persona select;
     private List<Persona> listadoPer;
-    private boolean bt;
+    private boolean bt = true;
 
     @PostConstruct
     public void iniciar() {
@@ -70,12 +70,20 @@ public class PersonaC implements Serializable {
         PersonaImpl dao;
         try {
             dao = new PersonaImpl();
-            if (filtro.equals("A")) {
-                bt = true;
-            } else {
-                bt = false;
-            }
             listadoPer = dao.listarE(filtro);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean estado() throws Exception {
+        try {
+            if (bt == true) {
+                listar("A");
+            } else {
+                listar("I");
+            }
+            return bt;
         } catch (Exception e) {
             throw e;
         }
@@ -114,4 +122,5 @@ public class PersonaC implements Serializable {
     }
 
     
+
 }
