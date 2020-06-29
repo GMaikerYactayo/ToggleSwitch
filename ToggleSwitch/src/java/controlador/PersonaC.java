@@ -3,6 +3,8 @@ package controlador;
 import dao.PersonaImpl;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.util.List;
@@ -19,6 +21,8 @@ public class PersonaC implements Serializable {
     private Persona select;
     private List<Persona> listadoPer;
     private boolean bt = true;
+    SimpleDateFormat formateador = new SimpleDateFormat("dd/MMM/yyyy");
+    private Date fechaFormulario;
 
     @PostConstruct
     public void iniciar() {
@@ -32,22 +36,12 @@ public class PersonaC implements Serializable {
         PersonaImpl dao;
         try {
             dao = new PersonaImpl();
+            persona.setFECNAC(formateador.format(fechaFormulario));
             dao.registrar(persona);
             listar("A");
+            limpiar();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro", "Completado..."));
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    public void modificar() throws Exception {
-        PersonaImpl dao;
-        try {
-            dao = new PersonaImpl();
-            dao.modificar(select);
-            listar("A");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualización", "Completado.."));
         } catch (Exception e) {
             throw e;
         }
@@ -61,6 +55,19 @@ public class PersonaC implements Serializable {
             listar("A");
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_FATAL, "Eliminación", "Completado.."));
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+    
+    public void activar() throws Exception {
+        PersonaImpl dao;
+        try {
+            dao = new PersonaImpl();
+            dao.activar(select);
+            listar("I");
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Activaciòn", "Completado.."));
         } catch (SQLException e) {
             throw e;
         }
@@ -84,6 +91,14 @@ public class PersonaC implements Serializable {
                 listar("I");
             }
             return bt;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void limpiar() throws Exception {
+        try {
+            persona = new Persona();
         } catch (Exception e) {
             throw e;
         }
@@ -121,6 +136,20 @@ public class PersonaC implements Serializable {
         this.bt = bt;
     }
 
-    
+    public SimpleDateFormat getFormateador() {
+        return formateador;
+    }
+
+    public void setFormateador(SimpleDateFormat formateador) {
+        this.formateador = formateador;
+    }
+
+    public Date getFechaFormulario() {
+        return fechaFormulario;
+    }
+
+    public void setFechaFormulario(Date fechaFormulario) {
+        this.fechaFormulario = fechaFormulario;
+    }
 
 }

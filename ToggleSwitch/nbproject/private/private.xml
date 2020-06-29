@@ -2,6 +2,12 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/L8/Desktop/ToggleSwitch/ToggleSwitch/src/java/dao/PersonaImpl.java</file>
+            <file>file:/C:/Users/L8/Desktop/ToggleSwitch/ToggleSwitch/src/java/controlador/PersonaC.java</file>
+            <file>file:/C:/Users/L8/Desktop/ToggleSwitch/ToggleSwitch/src/java/dao/Conexion.java</file>
+            <file>file:/C:/Users/L8/Desktop/ToggleSwitch/ToggleSwitch/src/java/modelo/Persona.java</file>
+            <file>file:/C:/Users/L8/Desktop/ToggleSwitch/ToggleSwitch/web/vista/persona/LstPersona.xhtml</file>
+        </group>
     </open-files>
 </project-private>

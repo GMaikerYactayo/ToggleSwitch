@@ -8,6 +8,7 @@ public class Persona {
     private String CELPER;
     private String DNIPER;
     private String ESTPER;
+    private String FECNAC;
 
     public int getCODPER() {
         return CODPER;
@@ -55,6 +56,14 @@ public class Persona {
 
     public void setESTPER(String ESTPER) {
         this.ESTPER = ESTPER;
+    }
+
+    public String getFECNAC() {
+        return FECNAC;
+    }
+
+    public void setFECNAC(String FECNAC) {
+        this.FECNAC = FECNAC;
     }
     
     

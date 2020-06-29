@@ -40,14 +40,42 @@
             transition: .4s;
         }
     </style>
-
-
     <h:head>
 
     </h:head>
     <h:body>
 
         <p:growl showDetail="true" id="messages" />
+
+        <center>
+            <h:form id="formIns">
+                <h1 style="margin-top:0">
+                    REGISTRO DE PERSONA
+                </h1>
+                <p:panelGrid columns="2" >
+                    <p:outputLabel for="DNI" value="DNI: " style="font-weight:bold"/>
+                    <p:inputText id="DNI" value="#{personaC.persona.DNIPER}"  maxlength="8" >
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputText>
+                    <p:outputLabel for="Nom" value="Nombre(s): " style="font-weight:bold"/>
+                    <p:inputText id="Nom" value="#{personaC.persona.NOMPER}" maxlength="30" required="true" requiredMessage="Se requiere nombre(s)">
+                        <p:keyFilter regEx="/[A-Z_a-z_ñ _á_é_í_ó_ú]/"/>
+                    </p:inputText>
+                    <p:outputLabel for="Ape" value="Apellidos: " style="font-weight:bold"/>
+                    <p:inputText id="Ape" value="#{personaC.persona.APEPER}" maxlength="40" required="true" requiredMessage="Se requiere apellidos">
+                        <p:keyFilter regEx="/[A-Z_a-z_ñ _á_é_í_ó_ú]/"/>
+                    </p:inputText>
+                    <p:outputLabel for="Cel" value="Celular: " style="font-weight:bold"/>
+                    <p:inputText id="Cel" value="#{personaC.persona.CELPER}" maxlength="9" >
+                        <p:keyFilter regEx="/[0-9]/"/>
+                    </p:inputText>
+                    <p:outputLabel value="F. nacimiento " style="font-weight:bold"/>
+                    <p:calendar id="button" value="#{personaC.fechaFormulario}" required="true" requiredMessage="Se requiere fecha" showOn="button" navigator="true" pattern="dd/MMM/yyyy" 
+                                style="width: 400px" autocomplete="off" readonlyInput="true" locale="es"/>
+                </p:panelGrid>
+                <p:commandButton value="Registrar" actionListener="#{personaC.registrar()}" update="formIns :form:dtTable"/> 
+            </h:form>
+        </center>
 
         <h:form id="form">
 
@@ -69,14 +97,8 @@
 
                 <p:autoUpdate/>
 
-                <p:column headerText="ID" >
-                    <center>
-                        <h:outputText value="#{lista.CODPER}" />
-                    </center>
-                </p:column>
                 <p:column headerText="Nombre y apellido"   >
                     <center>
-
                         <h:outputText value="#{lista.NOMPER} #{lista.APEPER}" />
                     </center>
                 </p:column>
@@ -90,10 +112,15 @@
                         <h:outputText value="#{lista.DNIPER}" />
                     </center>
                 </p:column>
+                <p:column headerText="F. NACIMIENTO" style="width: 150px;text-align:center">
+                    <h:outputText value="#{lista.FECNAC}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                </p:column>
                 <p:column  headerText="ESTADO" filterBy="#{lista.ESTPER}">
                     <center>
                         <f:facet name="filter">
-                            <p:toggleSwitch value="#{personaC.bt}"  onchange="PF('estado').filter()">
+                            <p:toggleSwitch id="toggle" value="#{personaC.bt}" onchange="PF('estado').filter()">
                                 <p:ajax listener="#{personaC.estado()}" />
                             </p:toggleSwitch>
                         </f:facet>
@@ -106,8 +133,15 @@
                 </f:facet>
             </p:dataTable>
             <p:contextMenu id="botones" for="dtTable">
-                <p:menuitem value="Modificar" update=":dlgDatos" icon="ui-icon-pencil"  oncomplete="PF('wdlgDatos').show()"/>
-                <p:menuitem value="Eliminar" update=":messages :form" icon="ui-icon-circle-close" oncomplete="PF('estado').clearFilters()" action="#{personaC.eliminar()}"/>
+                <p:autoUpdate/>
+                <p:menuitem value="Inactivar" update=":messages :form:dtTable" oncomplete="PF('estado').clearFilters()" 
+                            rendered="#{personaC.bt}" icon="ui-icon-circle-close" action="#{personaC.eliminar()}">
+                    <p:confirm header="CONFIRMACIÓN" message="¿Deseas eliminar?" />
+                </p:menuitem>
+                <p:menuitem value="Activar" update=":messages :form:dtTable" oncomplete="PF('estado').clearFilters()" 
+                            rendered="#{!personaC.bt}" icon="ui-icon-circle-check"  action="#{personaC.activar()}">
+                    <p:confirm header="CONFIRMACIÓN" message="¿Deseas activar?" />
+                </p:menuitem>
             </p:contextMenu>
 
         </h:form>

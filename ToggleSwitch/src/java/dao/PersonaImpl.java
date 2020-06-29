@@ -14,14 +14,14 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
     public void registrar(Persona persona) throws Exception {
         try {
             this.Conexion();
-            String sql = "INSERT INTO PERSONA (CODPER, NOMPER, APEPER, CELPER, DNIPER, `A`)"
-                    + "VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO PERSONA (NOMPER, APEPER, CELPER, DNIPER, ESTPER, FECNAC)"
+                    + "VALUES (?,?,?,?,'A',?)";
             try (PreparedStatement ps = this.getCn().prepareCall(sql)) {
-                ps.setInt(1, persona.getCODPER());
-                ps.setString(2, persona.getNOMPER());
-                ps.setString(3, persona.getAPEPER());
-                ps.setString(4, persona.getCELPER());
-                ps.setString(5, persona.getDNIPER());
+                ps.setString(1, persona.getNOMPER());
+                ps.setString(2, persona.getAPEPER());
+                ps.setString(3, persona.getCELPER());
+                ps.setString(4, persona.getDNIPER());
+                ps.setString(5, persona.getFECNAC());
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
@@ -54,7 +54,7 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
 
     @Override
     public void eliminar(Persona persona) throws Exception {
-         try {
+        try {
             this.Conexion();
             String sql = "UPDATE PERSONA SET ESTPER='I' WHERE CODPER=?";
             PreparedStatement ps = this.getCn().prepareStatement(sql);
@@ -71,7 +71,7 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
     @Override
     public List<Persona> listar() throws Exception {
         List<Persona> listado;
-        Persona empr;
+        Persona pers;
         try {
             this.Conexion();
             String sql = "SELECT * FROM PERSONA where ESTPER='A'";
@@ -79,14 +79,15 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
             Statement st = this.getCn().createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
-                empr = new Persona();
-                empr.setCODPER(rs.getInt("CODPER"));
-                empr.setNOMPER(rs.getString("NOMPER"));
-                empr.setAPEPER(rs.getString("APEPER"));
-                empr.setCELPER(rs.getString("CELPER"));
-                empr.setDNIPER(rs.getString("DNIPER"));
-                empr.setESTPER(rs.getString("ESTPER"));
-                listado.add(empr);
+                pers = new Persona();
+                pers.setCODPER(rs.getInt("CODPER"));
+                pers.setNOMPER(rs.getString("NOMPER"));
+                pers.setAPEPER(rs.getString("APEPER"));
+                pers.setCELPER(rs.getString("CELPER"));
+                pers.setDNIPER(rs.getString("DNIPER"));
+                pers.setESTPER(rs.getString("ESTPER"));
+                pers.setFECNAC(rs.getString("FECNAC"));
+                listado.add(pers);
             }
             rs.close();
             st.close();
@@ -97,6 +98,7 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
         }
         return listado;
     }
+
     public List<Persona> listarE(String filtro) throws Exception {
         List<Persona> listado;
         Persona per;
@@ -114,6 +116,7 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
                 per.setCELPER(rs.getString("CELPER"));
                 per.setDNIPER(rs.getString("DNIPER"));
                 per.setESTPER(rs.getString("ESTPER"));
+                per.setFECNAC(rs.getString("FECNAC"));
                 listado.add(per);
             }
             rs.close();
@@ -124,6 +127,21 @@ public class PersonaImpl extends Conexion implements ICRUD<Persona> {
             this.cerrar();
         }
         return listado;
+    }
+
+    public void activar(Persona persona) throws Exception {
+        try {
+            this.Conexion();
+            String sql = "UPDATE PERSONA SET ESTPER='A' WHERE CODPER=?";
+            PreparedStatement ps = this.getCn().prepareStatement(sql);
+            ps.setInt(1, persona.getCODPER());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            System.out.println("Error al activar persona " + e.getMessage());
+        } finally {
+            this.cerrar();
+        }
     }
 
 }
